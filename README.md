@@ -34,9 +34,8 @@ spring.dubbo.scan=com.vcg.comment.service
 spring.dubbo.protocol.host=发布的hostname
 
 
-
-```
 在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
+```
 * spring boot启动
 ```
 @SpringBootApplication
