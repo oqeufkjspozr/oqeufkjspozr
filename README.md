@@ -106,14 +106,16 @@ public class UserController {
         referenceBean.setInterface(CommentService.class);
         return referenceBean.get();
     }
-	
-	
-	@Component
-	public class UserController {
 
-		@Autowired
-		private CommentService commentService;
-	}
+* 引用Dubbo服务,引用以上服务:
+```
+    @Component
+    public class UserController {
 
+        @Autowired
+        private CommentService commentService;
+
+    }
+```
 
 
