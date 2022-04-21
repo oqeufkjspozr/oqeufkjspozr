@@ -98,7 +98,7 @@ public class UserController {
 ```
 
 * 如果你不喜欢@Reference注入服务,而是用@Autowired可以采用以下方式.
-
+```
 
     @Bean
     public CommentService commentService() {
@@ -106,6 +106,7 @@ public class UserController {
         referenceBean.setInterface(CommentService.class);
         return referenceBean.get();
     }
+```
 
 * 引用Dubbo服务,引用以上服务:
 ```
