@@ -89,6 +89,7 @@ public class Application {
 ```
 * 引用Dubbo服务,只需要添加要发布的服务实现上添加 @Reference ,如下:
 ```
+
 @Component
 public class UserController {
 
