@@ -90,12 +90,12 @@ public class Application {
 * 引用Dubbo服务,只需要添加要发布的服务实现上添加 @Reference ,如下:
 ```
 
-@Component
-public class UserController {
+    @Component
+    public class UserController {
 
-    @Reference(version = "1.0.0")
-    private CommentService commentService;
-}
+        @Reference(version = "1.0.0")
+        private CommentService commentService;
+    }
 ```
 
 * 如果你不喜欢@Reference注入服务,而是用@Autowired可以采用以下方式.
