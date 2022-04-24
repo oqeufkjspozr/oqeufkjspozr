@@ -80,12 +80,12 @@ public class CommentServiceImpl implements CommentService {
 ```
 * spring boot启动
 ```
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+    @SpringBootApplication
+    public class Application {
+        public static void main(String[] args) {
+            SpringApplication.run(Application.class, args);
+        }
     }
-}
 ```
 * 引用Dubbo服务,只需要添加要发布的服务实现上添加 @Reference ,如下:
 ```
