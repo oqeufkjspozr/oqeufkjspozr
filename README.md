@@ -70,22 +70,25 @@ public class CommentServiceImpl implements CommentService {
 * 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
 
 ```
+
     #dubbo consumer
     spring.dubbo.application.name=comment-consumer
     spring.dubbo.registry.protocol=zookeeper
     spring.dubbo.registry.address=monkey:2181,127.0.0.1:2181
     spring.dubbo.scan=com.vcg
+    在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
 
-在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
 ```
 * spring boot启动
 ```
+
     @SpringBootApplication
     public class Application {
         public static void main(String[] args) {
             SpringApplication.run(Application.class, args);
         }
     }
+
 ```
 * 引用Dubbo服务,只需要添加要发布的服务实现上添加 @Reference ,如下:
 ```
