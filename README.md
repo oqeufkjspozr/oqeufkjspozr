@@ -38,12 +38,14 @@ spring.dubbo.protocol.host=发布的hostname
 ```
 * spring boot启动
 ```
-@SpringBootApplication
-public class Application {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+    @SpringBootApplication
+    public class Application {
+
+        public static void main(String[] args) {
+            SpringApplication.run(Application.class, args);
+        }
+
 ```
 * 编写你的Dubbo服务,只需要添加要发布的服务实现上添加 @Service ,如下
 ```
