@@ -47,28 +47,33 @@ spring.dubbo.protocol.host=发布的hostname
         }
 
 ```
-* 编写你的Dubbo服务,只需要添加要发布的服务实现上添加 @Service ,如下
-```
-@Service(version = "1.0.0")
-public class CommentServiceImpl implements CommentService {
+* 编写你的Dubbo服务,只需要添加要发布的服务实现上添加 @Service ,如下:
 
-    @Override
-    public String test() {
-        return "hello";
+```
+    @Service(version = "1.0.0")
+    public class CommentServiceImpl implements CommentService {
+
+        @Override
+        public String test() {
+            return "hello";
+        }
     }
-}
 
 ```
 
 ##如何引用Dubbo服务
 * 在Spring Boot项目的pom.xml中添加以下依赖:
+
 ```
- <dependency>
+
+    <dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-dubbo</artifactId>
          <version>1.3.5.SNAPSHOT</version>
- </dependency>
+    </dependency>
+
  ```
+
 * 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
 
 ```
@@ -101,6 +106,7 @@ public class CommentServiceImpl implements CommentService {
         @Reference(version = "1.0.0")
         private CommentService commentService;
     }
+
 ```
 
 * 如果你不喜欢@Reference注入服务,而是用@Autowired可以采用以下方式.
@@ -112,6 +118,7 @@ public class CommentServiceImpl implements CommentService {
         referenceBean.setInterface(CommentService.class);
         return referenceBean.get();
     }
+
 ```
 
 * 引用Dubbo服务,引用以上服务:
