@@ -86,6 +86,7 @@ spring.dubbo.protocol.host=发布的hostname
     在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
 
 ```
+
 * spring boot启动
 ```
 
@@ -97,7 +98,9 @@ spring.dubbo.protocol.host=发布的hostname
     }
 
 ```
+
 * 引用Dubbo服务,只需要添加要发布的服务实现上添加 @Reference ,如下:
+
 ```
 
     @Component
@@ -110,6 +113,7 @@ spring.dubbo.protocol.host=发布的hostname
 ```
 
 * 如果你不喜欢@Reference注入服务,而是用@Autowired可以采用以下方式.
+
 ```
 
     @Bean
@@ -122,6 +126,7 @@ spring.dubbo.protocol.host=发布的hostname
 ```
 
 * 引用Dubbo服务,引用以上服务:
+
 ```
     @Component
     public class UserController {
