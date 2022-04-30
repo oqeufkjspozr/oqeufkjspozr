@@ -117,9 +117,11 @@ spring.dubbo.protocol.host=发布的hostname
 ```
 
     @Bean
-    public CommentService commentService() {
+    public CommentService commentService(ApplicationContext applicationContext) {
         ReferenceBean<CommentService> referenceBean = new ReferenceBean<>();
         referenceBean.setInterface(CommentService.class);
+        referenceBean.setInterfaceName("commentService");
+        referenceBean.setApplicationContext(applicationContext);
         return referenceBean.get();
     }
 
