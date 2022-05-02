@@ -59,7 +59,7 @@ spring.dubbo.protocol.host=发布的hostname
         }
     }
 
-    如果你不喜欢Dubbo的@Service注解,而是喜欢原生的Spring @Service注解,可以采用以下方式
+    如果你不喜欢Dubbo的@Service注解,而是喜欢原生的Spring @Service注解,可以采用以下方式对外发布服务
         @Bean
         public ServiceBean<CommentService> commentServiceServiceBean(CommentService commentService) {
             ServiceBean<CommentService> serviceBean = new ServiceBean<>();
