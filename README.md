@@ -60,6 +60,9 @@ spring.dubbo.protocol.host=发布的hostname
     }
 
     如果你不喜欢Dubbo的@Service注解,而是喜欢原生的Spring @Service注解,可以采用以下方式对外发布服务
+    @Configurable
+    @Component
+    public class BeanConfiguration {
         @Bean
         public ServiceBean<CommentService> commentServiceServiceBean(CommentService commentService) {
             ServiceBean<CommentService> serviceBean = new ServiceBean<>();
@@ -67,6 +70,7 @@ spring.dubbo.protocol.host=发布的hostname
             serviceBean.setRef(commentService);
             return serviceBean;
         }
+    }
 ```
 
 ##如何引用Dubbo服务
@@ -123,14 +127,17 @@ spring.dubbo.protocol.host=发布的hostname
 * 如果你不喜欢@Reference注入服务,而是用@Autowired可以采用以下方式.
 
 ```
-
-    @Bean
-    public CommentService commentService(ApplicationContext applicationContext) {
-        ReferenceBean<CommentService> referenceBean = new ReferenceBean<>();
-        referenceBean.setInterface(CommentService.class);
-        referenceBean.setInterfaceName("commentService");
-        referenceBean.setApplicationContext(applicationContext);
-        return referenceBean.get();
+    @Configurable
+    @Component
+    public class BeanConfiguration {
+        @Bean
+        public CommentService commentService(ApplicationContext applicationContext) {
+            ReferenceBean<CommentService> referenceBean = new ReferenceBean<>();
+            referenceBean.setInterface(CommentService.class);
+            referenceBean.setInterfaceName("commentService");
+            referenceBean.setApplicationContext(applicationContext);
+            return referenceBean.get();
+        }
     }
 
 ```
