@@ -1,10 +1,7 @@
 package com.alibaba.boot.dubbo;
 
+import com.alibaba.dubbo.config.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.ProtocolConfig;
-import com.alibaba.dubbo.config.RegistryConfig;
 
 @ConfigurationProperties(prefix = "spring.dubbo")
 public class DubboProperties {
@@ -16,6 +13,14 @@ public class DubboProperties {
     private RegistryConfig    registry;
 
     private ProtocolConfig    protocol;
+
+    private ConsumerConfig consumerConfig;
+
+    private MonitorConfig monitorConfig;
+
+    private ProviderConfig providerConfig;
+
+    private ModuleConfig moduleConfig;
 
     public String getScan() {
         return scan;
@@ -49,4 +54,35 @@ public class DubboProperties {
         this.scan = scan;
     }
 
+    public ConsumerConfig getConsumerConfig() {
+        return consumerConfig;
+    }
+
+    public void setConsumerConfig(ConsumerConfig consumerConfig) {
+        this.consumerConfig = consumerConfig;
+    }
+
+    public ModuleConfig getModuleConfig() {
+        return moduleConfig;
+    }
+
+    public void setModuleConfig(ModuleConfig moduleConfig) {
+        this.moduleConfig = moduleConfig;
+    }
+
+    public ProviderConfig getProviderConfig() {
+        return providerConfig;
+    }
+
+    public void setProviderConfig(ProviderConfig providerConfig) {
+        this.providerConfig = providerConfig;
+    }
+
+    public MonitorConfig getMonitorConfig() {
+        return monitorConfig;
+    }
+
+    public void setMonitorConfig(MonitorConfig monitorConfig) {
+        this.monitorConfig = monitorConfig;
+    }
 }
