@@ -8,6 +8,7 @@ Dubbo是阿里开发的一套分布式通讯框架,Spring-boot是业界比较火
 ##如何发布Dubbo服务
 * 在Spring Boot项目的pom.xml中添加以下依赖:
 ```
+
  <dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-dubbo</artifactId>
@@ -15,6 +16,7 @@ Dubbo是阿里开发的一套分布式通讯框架,Spring-boot是业界比较火
  </dependency>
  
  <!--依赖于容器-->
+
  <dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-web</artifactId>
@@ -25,13 +27,14 @@ Dubbo是阿里开发的一套分布式通讯框架,Spring-boot是业界比较火
 * 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
 ```
 #dubbo produce
-spring.dubbo.application.name=comment-provider
-spring.dubbo.registry.protocol=zookeeper
-spring.dubbo.registry.address=monkey:2181,127.0.0.1:2181
-spring.dubbo.protocol.name=duubo
-spring.dubbo.protocol.port=20880
-spring.dubbo.scan=com.vcg.comment.service
-spring.dubbo.protocol.host=发布的hostname
+
+    spring.dubbo.application.name=comment-provider
+    spring.dubbo.registry.protocol=zookeeper
+    spring.dubbo.registry.address=monkey:2181,127.0.0.1:2181
+    spring.dubbo.protocol.name=duubo
+    spring.dubbo.protocol.port=20880
+    spring.dubbo.scan=com.vcg.comment.service
+    spring.dubbo.protocol.host=发布的hostname
 
 
 在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
