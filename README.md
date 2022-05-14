@@ -1,9 +1,9 @@
 #spring-boot-start-dubbo
 
-Dubbo是阿里开发的一套分布式通讯框架,Spring-boot是业界比较火的微服务框架，两者可以进行结合实现分布式微服务
-* 对于提供外部的服务，可以使用spring-boot的rest服务,可以结合增强的dubbox,支持只注册dubbo服务,但不发布服务.
-同时也支持消费springboot对外提供的rest服务.git地址: https://git.oschina.net/wuyu15255872976/dubbox.git
-* 对于内部远程Rpc调用，可以借用Dubbo能力，达到服务治理的目的
+    Dubbo是阿里开发的一套分布式通讯框架,Spring-boot是业界比较火的微服务框架，两者可以进行结合实现分布式微服务
+*   对于提供外部的服务，可以使用spring-boot的rest服务,可以结合增强的dubbox,支持只注册dubbo服务,但不发布服务.
+    同时也支持消费springboot对外提供的rest服务.git地址: https://git.oschina.net/wuyu15255872976/dubbox.git
+*   对于内部远程Rpc调用，可以借用Dubbo能力，达到服务治理的目的
 
 ##如何发布Dubbo服务
 * 在Spring Boot项目的pom.xml中添加以下依赖:
@@ -37,7 +37,7 @@ Dubbo是阿里开发的一套分布式通讯框架,Spring-boot是业界比较火
     spring.dubbo.protocol.host=发布的hostname
 
 
-在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
+    在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
 ```
 * spring boot启动
 ```
