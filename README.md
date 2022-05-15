@@ -7,7 +7,7 @@
 
 ##如何发布Dubbo服务
 * 在Spring Boot项目的pom.xml中添加以下依赖:
-```
+
 
  <dependency>
          <groupId>org.springframework.boot</groupId>
@@ -23,7 +23,7 @@
          <version>1.3.6.RELEASE</version>
  </dependency>
  
- ```
+
 * 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
 ```
 #dubbo produce
@@ -78,7 +78,7 @@
 ##如何引用Dubbo服务
 * 在Spring Boot项目的pom.xml中添加以下依赖:
 
-```
+
 
     <dependency>
          <groupId>org.springframework.boot</groupId>
@@ -86,7 +86,7 @@
          <version>1.3.5.SNAPSHOT</version>
     </dependency>
 
- ```
+
 
 * 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
 
