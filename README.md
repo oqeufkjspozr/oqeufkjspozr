@@ -8,6 +8,7 @@
 ##如何发布Dubbo服务
 * 在Spring Boot项目的pom.xml中添加以下依赖:
 
+```
 
  <dependency>
          <groupId>org.springframework.boot</groupId>
@@ -22,9 +23,11 @@
          <artifactId>spring-boot-starter-web</artifactId>
          <version>1.3.6.RELEASE</version>
  </dependency>
- 
+
+ ```
 
 * 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
+
 ```
 #dubbo produce
 
@@ -152,5 +155,3 @@
 
     }
 ```
-
-
