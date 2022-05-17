@@ -86,7 +86,7 @@
     <dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-dubbo</artifactId>
-         <version>1.3.5.SNAPSHOT</version>
+         <version>1.3.6.SNAPSHOT</version>
     </dependency>
 
 

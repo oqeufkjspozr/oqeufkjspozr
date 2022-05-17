@@ -14,13 +14,13 @@ public class DubboProperties {
 
     private ProtocolConfig    protocol;
 
-    private ConsumerConfig consumerConfig;
+    private ConsumerConfig consumer;
 
-    private MonitorConfig monitorConfig;
+    private MonitorConfig monitor;
 
-    private ProviderConfig providerConfig;
+    private ProviderConfig provider;
 
-    private ModuleConfig moduleConfig;
+    private ModuleConfig module;
 
     public String getScan() {
         return scan;
@@ -54,35 +54,36 @@ public class DubboProperties {
         this.scan = scan;
     }
 
-    public ConsumerConfig getConsumerConfig() {
-        return consumerConfig;
+
+    public ConsumerConfig getConsumer() {
+        return consumer;
     }
 
-    public void setConsumerConfig(ConsumerConfig consumerConfig) {
-        this.consumerConfig = consumerConfig;
+    public void setConsumer(ConsumerConfig consumer) {
+        this.consumer = consumer;
     }
 
-    public ModuleConfig getModuleConfig() {
-        return moduleConfig;
+    public MonitorConfig getMonitor() {
+        return monitor;
     }
 
-    public void setModuleConfig(ModuleConfig moduleConfig) {
-        this.moduleConfig = moduleConfig;
+    public void setMonitor(MonitorConfig monitor) {
+        this.monitor = monitor;
     }
 
-    public ProviderConfig getProviderConfig() {
-        return providerConfig;
+    public ProviderConfig getProvider() {
+        return provider;
     }
 
-    public void setProviderConfig(ProviderConfig providerConfig) {
-        this.providerConfig = providerConfig;
+    public void setProvider(ProviderConfig provider) {
+        this.provider = provider;
     }
 
-    public MonitorConfig getMonitorConfig() {
-        return monitorConfig;
+    public ModuleConfig getModule() {
+        return module;
     }
 
-    public void setMonitorConfig(MonitorConfig monitorConfig) {
-        this.monitorConfig = monitorConfig;
+    public void setModule(ModuleConfig module) {
+        this.module = module;
     }
 }
