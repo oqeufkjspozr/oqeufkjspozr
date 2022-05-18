@@ -45,25 +45,25 @@ public class DubboAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ConsumerConfig requestConsumerConfig(){
-        return dubboProperties.getConsumerConfig();
+        return dubboProperties.getConsumer();
     }
 
     @Bean
     @ConditionalOnMissingBean
     public ProviderConfig requestProviderConfig(){
-        return dubboProperties.getProviderConfig();
+        return dubboProperties.getProvider();
     }
 
     @Bean
     @ConditionalOnMissingBean
     public MonitorConfig monitorConfig(){
-        return dubboProperties.getMonitorConfig();
+        return dubboProperties.getMonitor();
     }
 
     @Bean
     @ConditionalOnMissingBean
     public ModuleConfig moduleConfig(){
-        return dubboProperties.getModuleConfig();
+        return dubboProperties.getModule();
     }
 
 
