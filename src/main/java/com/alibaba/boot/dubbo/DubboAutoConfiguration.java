@@ -3,6 +3,7 @@ package com.alibaba.boot.dubbo;
 import com.alibaba.dubbo.config.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -44,24 +45,28 @@ public class DubboAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(name = "spring.dubbo.consumer")
     public ConsumerConfig requestConsumerConfig(){
         return dubboProperties.getConsumer();
     }
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(name = "spring.dubbo.provider")
     public ProviderConfig requestProviderConfig(){
         return dubboProperties.getProvider();
     }
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(name = "spring.dubbo.monitor")
     public MonitorConfig monitorConfig(){
         return dubboProperties.getMonitor();
     }
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(name = "spring.dubbo.module")
     public ModuleConfig moduleConfig(){
         return dubboProperties.getModule();
     }
