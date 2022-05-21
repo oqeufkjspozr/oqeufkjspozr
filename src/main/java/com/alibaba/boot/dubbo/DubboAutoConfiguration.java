@@ -44,33 +44,33 @@ public class DubboAutoConfiguration {
         return new DubboEndpoint();
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(name = "spring.dubbo.consumer")
-    public ConsumerConfig requestConsumerConfig(){
-        return dubboProperties.getConsumer();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(name = "spring.dubbo.provider")
-    public ProviderConfig requestProviderConfig(){
-        return dubboProperties.getProvider();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(name = "spring.dubbo.monitor")
-    public MonitorConfig monitorConfig(){
-        return dubboProperties.getMonitor();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(name = "spring.dubbo.module")
-    public ModuleConfig moduleConfig(){
-        return dubboProperties.getModule();
-    }
+//    @Bean
+//    @ConditionalOnMissingBean
+//    @ConditionalOnProperty(name = "spring.dubbo.consumer")
+//    public ConsumerConfig requestConsumerConfig(){
+//        return dubboProperties.getConsumer();
+//    }
+//
+//    @Bean
+//    @ConditionalOnMissingBean
+//    @ConditionalOnProperty(name = "spring.dubbo.provider")
+//    public ProviderConfig requestProviderConfig(){
+//        return dubboProperties.getProvider();
+//    }
+//
+//    @Bean
+//    @ConditionalOnMissingBean
+//    @ConditionalOnProperty(name = "spring.dubbo.monitor")
+//    public MonitorConfig monitorConfig(){
+//        return dubboProperties.getMonitor();
+//    }
+//
+//    @Bean
+//    @ConditionalOnMissingBean
+//    @ConditionalOnProperty(name = "spring.dubbo.module")
+//    public ModuleConfig moduleConfig(){
+//        return dubboProperties.getModule();
+//    }
 
 
     @Bean
