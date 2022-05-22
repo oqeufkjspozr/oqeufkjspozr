@@ -2,7 +2,6 @@ package com.alibaba.boot.dubbo;
 
 import com.alibaba.dubbo.config.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -44,33 +43,13 @@ public class DubboAutoConfiguration {
         return new DubboEndpoint();
     }
 
-//    @Bean
-//    @ConditionalOnMissingBean
-//    @ConditionalOnProperty(name = "spring.dubbo.consumer")
-//    public ConsumerConfig requestConsumerConfig(){
-//        return dubboProperties.getConsumer();
-//    }
-//
-//    @Bean
-//    @ConditionalOnMissingBean
-//    @ConditionalOnProperty(name = "spring.dubbo.provider")
-//    public ProviderConfig requestProviderConfig(){
-//        return dubboProperties.getProvider();
-//    }
-//
-//    @Bean
-//    @ConditionalOnMissingBean
-//    @ConditionalOnProperty(name = "spring.dubbo.monitor")
-//    public MonitorConfig monitorConfig(){
-//        return dubboProperties.getMonitor();
-//    }
-//
-//    @Bean
-//    @ConditionalOnMissingBean
-//    @ConditionalOnProperty(name = "spring.dubbo.module")
-//    public ModuleConfig moduleConfig(){
-//        return dubboProperties.getModule();
-//    }
+    @Bean
+    @ConditionalOnMissingBean
+    public MonitorConfig monitorConfig() {
+        MonitorConfig monitorConfig = new MonitorConfig();
+        monitorConfig.setProtocol("registry");
+        return monitorConfig;
+    }
 
 
     @Bean
