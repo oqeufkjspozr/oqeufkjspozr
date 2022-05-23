@@ -68,10 +68,20 @@
     如果你不喜欢Dubbo的@Service注解,而是喜欢原生的Spring @Service注解,可以采用以下方式对外发布服务
     @Configurable
     public class BeanConfiguration {
+
+        MonitorConfig monitorConfig;
+
+        @Autowire
+        public void setMonitorConfig(MonitorConfig monitorConfig){
+            this.monitorConfig=monitorConfig;
+        }
+
         @Bean
         public ServiceBean<CommentService> commentServiceServiceBean(CommentService commentService) {
             ServiceBean<CommentService> serviceBean = new ServiceBean<>();
             serviceBean.setInterface(CommentService.class);
+            //开启监控
+            serviceBean.setMonitor(monitorConfig);
             serviceBean.setRef(commentService);
             return serviceBean;
         }
@@ -134,10 +144,20 @@
 ```
     @Configurable
     public class BeanConfiguration {
+
+
+        MonitorConfig monitorConfig;
+
+        @Autowire
+        public void setMonitorConfig(MonitorConfig monitorConfig){
+            this.monitorConfig=monitorConfig;
+        }
+
         @Bean
         public ReferenceBean<CommentService> commentService(){
             ReferenceBean<CommentService> commentServiceBean=new ReferenceBean<>();
             commentServiceBean.setInterface(CommentService.class);
+            commentServiceBean.setMonitor(monitorConfig);
             return commentServiceBean;
         }
     }
