@@ -2,16 +2,20 @@ package com.alibaba.boot.dubbo;
 
 import com.alibaba.dubbo.config.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @ConfigurationProperties(prefix = "spring.dubbo")
 public class DubboProperties {
 
     private String            scan;
 
+    @NestedConfigurationProperty
     private ApplicationConfig application;
 
+    @NestedConfigurationProperty
     private RegistryConfig    registry;
 
+    @NestedConfigurationProperty
     private ProtocolConfig    protocol;
 
     public String getScan() {
