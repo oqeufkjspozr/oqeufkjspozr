@@ -42,14 +42,6 @@ public class DubboAutoConfiguration {
         return new DubboEndpoint();
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public MonitorConfig monitorConfig() {
-        MonitorConfig monitorConfig = new MonitorConfig();
-        monitorConfig.setProtocol("registry");
-        return monitorConfig;
-    }
-
 
     @Bean
     public DubboHealthIndicator dubboHealthIndicator() {
