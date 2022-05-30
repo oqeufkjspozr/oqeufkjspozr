@@ -5,15 +5,52 @@
     同时也支持消费springboot对外提供的rest服务.git地址: https://github.com/wu191287278/dubbo.git
 *   对于内部远程Rpc调用，可以借用Dubbo能力，达到服务治理的目的
 
+##增加feign protocol支持,可以消费springcloud提供的接口
+* 添加以下maven
+```
+<!--Feign 支持-->
+<dependency>
+    <groupId>org.apache.httpcomponents</groupId>
+    <artifactId>httpclient</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-feign</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.github.openfeign</groupId>
+    <artifactId>feign-httpclient</artifactId>
+</dependency>
+```
+###feign示例
+```
+@Bean
+//服务端，多协议发布服务
+public ServiceBean<UserService> userServiceServiceBean(@Autowired UserService userService) {
+    ServiceBean<UserService> serviceBean = new ServiceBean<UserService>();
+    serviceBean.setInterface(UserService.class);
+    serviceBean.setRef(userService);
+    serviceBean.setProtocols(Arrays.asList(new ProtocolConfig("dubbo"), new ProtocolConfig("feign", port)));
+    return serviceBean;
+}
+
+@Bean
+//消费端，此种方式可以避免使用@Reference注解，保持与spring注解一致
+public ReferenceBean<UserService> userService() {
+    ReferenceBean<UserService> bean = new ReferenceBean<UserService>();
+    bean.setInterface(UserService.class);
+    return bean;
+}
+```
 ##如何发布Dubbo服务
 * 在Spring Boot项目的pom.xml中添加以下依赖:
-
 ```
 
  <dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-dubbo</artifactId>
-         <version>1.3.6.SNAPSHOT</version>
+         <version>1.4.5.SNAPSHOT</version>
  </dependency>
  
  <!--依赖于容器-->
@@ -21,7 +58,7 @@
  <dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-web</artifactId>
-         <version>1.3.6.RELEASE</version>
+         <version>1.4.5.RELEASE</version>
  </dependency>
 
  ```
@@ -31,99 +68,98 @@
 ```
 #dubbo produce
 
-    spring.dubbo.application.name=comment-provider
-    spring.dubbo.registry.protocol=zookeeper
-    spring.dubbo.registry.address=monkey:2181,127.0.0.1:2181
-    spring.dubbo.protocol.name=duubo
-    spring.dubbo.protocol.port=20880
-    spring.dubbo.scan=com.vcg.comment.service
-    spring.dubbo.protocol.host=发布的hostname
+spring.dubbo.application.name=comment-provider
+spring.dubbo.registry.protocol=zookeeper
+spring.dubbo.registry.address=monkey:2181,127.0.0.1:2181
+spring.dubbo.protocol.name=dubbo
+spring.dubbo.protocol.port=20880
+spring.dubbo.scan=com.vcg.comment.service
+spring.dubbo.protocol.host=发布的hostname
 
 
-    在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
+在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
 ```
 * spring boot启动
 ```
 
-    @SpringBootApplication
-    @EnableDubboAutoConfiguration
-    public class Application {
+@SpringBootApplication
+@EnableDubboAutoConfiguration
+public class Application {
 
-        public static void main(String[] args) {
-            SpringApplication.run(Application.class, args);
-        }
-
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
 ```
 * 编写你的Dubbo服务,只需要添加要发布的服务实现上添加 @Service ,如下:
 
 ```
-    @Service(version = "1.0.0")
-    public class CommentServiceImpl implements CommentService {
+@Service(version = "1.0.0")
+public class CommentServiceImpl implements CommentService {
 
-        @Override
-        public String test() {
-            return "hello";
-        }
+    @Override
+    public String test() {
+        return "hello";
+    }
+}
+
+如果你不喜欢Dubbo的@Service注解,而是喜欢原生的Spring @Service注解,可以采用以下方式对外发布服务
+@Configurable
+public class BeanConfiguration {
+
+    MonitorConfig monitorConfig;
+
+    @Autowire
+    public void setMonitorConfig(MonitorConfig monitorConfig){
+        this.monitorConfig=monitorConfig;
     }
 
-    如果你不喜欢Dubbo的@Service注解,而是喜欢原生的Spring @Service注解,可以采用以下方式对外发布服务
-    @Configurable
-    public class BeanConfiguration {
-
-        MonitorConfig monitorConfig;
-
-        @Autowire
-        public void setMonitorConfig(MonitorConfig monitorConfig){
-            this.monitorConfig=monitorConfig;
-        }
-
-        @Bean
-        public ServiceBean<CommentService> commentServiceServiceBean(CommentService commentService) {
-            ServiceBean<CommentService> serviceBean = new ServiceBean<>();
-            serviceBean.setInterface(CommentService.class);
-            //开启监控
-            serviceBean.setMonitor(monitorConfig);
-            serviceBean.setRef(commentService);
-            return serviceBean;
-        }
+    @Bean
+    public ServiceBean<CommentService> commentServiceServiceBean(CommentService commentService) {
+        ServiceBean<CommentService> serviceBean = new ServiceBean<>();
+        serviceBean.setInterface(CommentService.class);
+        //开启监控
+        serviceBean.setMonitor(monitorConfig);
+        serviceBean.setRef(commentService);
+        return serviceBean;
     }
+}
 ```
 
 ##如何引用Dubbo服务
 * 在Spring Boot项目的pom.xml中添加以下依赖:
 
+```
 
-
-    <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-dubbo</artifactId>
-         <version>1.3.6.SNAPSHOT</version>
-    </dependency>
-
-
-
-* 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
+<dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-dubbo</artifactId>
+     <version>1.4.5.SNAPSHOT</version>
+</dependency>
 
 ```
 
-    #dubbo consumer
-    spring.dubbo.application.name=comment-consumer
-    spring.dubbo.registry.protocol=zookeeper
-    spring.dubbo.registry.address=monkey:2181,127.0.0.1:2181
-    spring.dubbo.scan=com.vcg
-    在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
+* 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
+
+#dubbo consumer
+```
+spring.dubbo.application.name=comment-consumer
+spring.dubbo.registry.protocol=zookeeper
+spring.dubbo.registry.address=monkey:2181,127.0.0.1:2181
+spring.dubbo.scan=com.vcg
+在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
 
 ```
 
 * spring boot启动
 ```
 
-    @SpringBootApplication
-    public class Application {
-        public static void main(String[] args) {
-            SpringApplication.run(Application.class, args);
-        }
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
     }
+}
 
 ```
 
@@ -131,48 +167,48 @@
 
 ```
 
-    @Component
-    public class UserController {
+@Component
+public class UserController {
 
-        @Reference(version = "1.0.0")
-        private CommentService commentService;
-    }
+    @Reference(version = "1.0.0")
+    private CommentService commentService;
+}
 
 ```
 
 * 如果你不喜欢@Reference注入服务,而是用@Autowired可以采用以下方式.
 
 ```
-    @Configurable
-    public class BeanConfiguration {
+@Configurable
+public class BeanConfiguration {
 
 
-        MonitorConfig monitorConfig;
+    MonitorConfig monitorConfig;
 
-        @Autowire
-        public void setMonitorConfig(MonitorConfig monitorConfig){
-            this.monitorConfig=monitorConfig;
-        }
-
-        @Bean
-        public ReferenceBean<CommentService> commentService(){
-            ReferenceBean<CommentService> commentServiceBean=new ReferenceBean<>();
-            commentServiceBean.setInterface(CommentService.class);
-            commentServiceBean.setMonitor(monitorConfig);
-            return commentServiceBean;
-        }
+    @Autowire
+    public void setMonitorConfig(MonitorConfig monitorConfig){
+        this.monitorConfig=monitorConfig;
     }
+
+    @Bean
+    public ReferenceBean<CommentService> commentService(){
+        ReferenceBean<CommentService> commentServiceBean=new ReferenceBean<>();
+        commentServiceBean.setInterface(CommentService.class);
+        commentServiceBean.setMonitor(monitorConfig);
+        return commentServiceBean;
+    }
+}
 
 ```
 
 * 引用Dubbo服务,引用以上服务:
 
 ```
-    @Component
-    public class UserController {
+@Component
+public class UserController {
 
-        @Autowired
-        private CommentService commentService;
+    @Autowired
+    private CommentService commentService;
 
-    }
+}
 ```
