@@ -6,7 +6,8 @@
 *   对于内部远程Rpc调用，可以借用Dubbo能力，达到服务治理的目的
 
 ##增加feign protocol支持,可以消费springcloud提供的接口
-* 添加以下maven
+添加以下maven
+
 ```
 <!--Feign 支持-->
 <dependency>
@@ -24,6 +25,7 @@
 </dependency>
 ```
 ###feign示例
+
 ```
 @Bean
 //服务端，多协议发布服务
@@ -44,7 +46,8 @@ public ReferenceBean<UserService> userService() {
 }
 ```
 ##如何发布Dubbo服务
-* 在Spring Boot项目的pom.xml中添加以下依赖:
+在Spring Boot项目的pom.xml中添加以下依赖:
+
 ```
 
  <dependency>
@@ -63,7 +66,7 @@ public ReferenceBean<UserService> userService() {
 
  ```
 
-* 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
+在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
 
 ```
 #dubbo produce
@@ -79,7 +82,7 @@ spring.dubbo.protocol.host=发布的hostname
 
 在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
 ```
-* spring boot启动
+spring boot启动
 ```
 
 @SpringBootApplication
@@ -91,7 +94,7 @@ public class Application {
     }
 }
 ```
-* 编写你的Dubbo服务,只需要添加要发布的服务实现上添加 @Service ,如下:
+编写你的Dubbo服务,只需要添加要发布的服务实现上添加 @Service ,如下:
 
 ```
 @Service(version = "1.0.0")
@@ -127,7 +130,7 @@ public class BeanConfiguration {
 ```
 
 ##如何引用Dubbo服务
-* 在Spring Boot项目的pom.xml中添加以下依赖:
+在Spring Boot项目的pom.xml中添加以下依赖:
 
 ```
 
@@ -139,7 +142,7 @@ public class BeanConfiguration {
 
 ```
 
-* 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
+在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
 
 #dubbo consumer
 ```
@@ -151,19 +154,7 @@ spring.dubbo.scan=com.vcg
 
 ```
 
-* spring boot启动
-```
-
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-
-```
-
-* 引用Dubbo服务,只需要添加要发布的服务实现上添加 @Reference ,如下:
+引用Dubbo服务,只需要添加要发布的服务实现上添加 @Reference ,如下:
 
 ```
 
@@ -176,7 +167,7 @@ public class UserController {
 
 ```
 
-* 如果你不喜欢@Reference注入服务,而是用@Autowired可以采用以下方式.
+如果你不喜欢@Reference注入服务,而是用@Autowired可以采用以下方式.
 
 ```
 @Configurable
@@ -201,7 +192,7 @@ public class BeanConfiguration {
 
 ```
 
-* 引用Dubbo服务,引用以上服务:
+引用Dubbo服务,引用以上服务:
 
 ```
 @Component
