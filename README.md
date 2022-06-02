@@ -4,7 +4,12 @@
 * 对于提供外部的服务，可以使用spring-boot的rest服务,可以结合增强的dubbo,支持只注册dubbo服务,但不发布服务.同时也支持消费springboot对外提供的rest服务.git地址: https://github.com/wu191287278/dubbo.git
 * 对于内部远程Rpc调用，可以借用Dubbo能力，达到服务治理的目的
 
-##增加feign protocol支持,可以消费springcloud提供的接口
+##增加feign protocol支持。
+
+> 该协议主要是为了支持老项目可以消费springcloud提供的接口，并可以利用dubbo的服务发现，构建出一个springboot rest集群，
+> dubbo与springboot结合时，不需要dubbo再次导出rest服务。而是由springboot提供rest服务dubbo端只负责注册，构建服务目录。
+
+
 添加以下maven
 
 ```
