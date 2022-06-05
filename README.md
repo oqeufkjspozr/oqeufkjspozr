@@ -47,7 +47,31 @@ public ReferenceBean<UserService> userService() {
     bean.setInterface(UserService.class);
     return bean;
 }
+
+
+@FeignClient(path = "/user")
+public interface UserService {
+
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    User findOne(@PathVariable(value = "id") Integer id);
+
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    void delete(@PathVariable(value = "id") Integer id);
+
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    void save(@RequestBody User user);
+
+    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    void update(@RequestBody User user);
+
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    List<User> findAll();
+
+}
+
 ```
+
+
 ##如何发布Dubbo服务
 在Spring Boot项目的pom.xml中添加以下依赖:
 
