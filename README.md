@@ -78,9 +78,9 @@ public interface UserService {
 ```
 
  <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-dubbo</artifactId>
-         <version>1.4.5.SNAPSHOT</version>
+        <groupId>com.alibaba</groupId>
+        <artifactId>spring-boot-starter-dubbo</artifactId>
+        <version>1.4.5.SNAPSHOT</version>
  </dependency>
  
  <!--依赖于容器-->
@@ -156,26 +156,13 @@ public class BeanConfiguration {
 }
 ```
 
-##如何引用Dubbo服务
-在Spring Boot项目的pom.xml中添加以下依赖:
-
-```
-
-<dependency>
-     <groupId>org.springframework.boot</groupId>
-     <artifactId>spring-boot-starter-dubbo</artifactId>
-     <version>1.4.5.SNAPSHOT</version>
-</dependency>
-
-```
-
 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
 
 #dubbo consumer
 ```
 spring.dubbo.application.name=comment-consumer
 spring.dubbo.registry.protocol=zookeeper
-spring.dubbo.registry.address=monkey:2181,127.0.0.1:2181
+spring.dubbo.registry.address=monkey:2181
 spring.dubbo.scan=com.vcg
 在Spring Application的application.properties中添加spring.dubbo.scan即可支持Dubbo服务发布,其中scan表示要扫描的package目录
 
