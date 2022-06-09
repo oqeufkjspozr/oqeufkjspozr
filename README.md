@@ -3,6 +3,12 @@
 * Dubbo是阿里开发的一套分布式通讯框架,Spring-boot是业界比较火的微服务框架，两者可以进行结合实现分布式微服务
 * 对于内部远程Rpc调用，可以借用Dubbo能力，达到服务治理的目的
 
+
+##例子
+---
+
+git: https://git.oschina.net/wuyu15255872976/dubbo-demo-parent.git
+
 ##增加feign protocol支持。
 
 > 该协议主要是为了支持老项目可以消费springcloud提供的接口，并可以利用dubbo的服务发现，构建出一个springboot rest集群，
