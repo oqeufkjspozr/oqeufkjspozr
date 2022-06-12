@@ -1,15 +1,12 @@
 package com.alibaba.boot.dubbo;
 
+import com.alibaba.dubbo.config.spring.AnnotationBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
-
-import com.alibaba.dubbo.config.spring.AnnotationBean;
-import com.alibaba.dubbo.config.spring.ServiceBean;
 
 public class DubboConfigurationApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
@@ -29,15 +26,15 @@ public class DubboConfigurationApplicationContextInitializer implements Applicat
     }
 
     private Object registerAndInstance(String scan) {
-        if (!applicationContext.containsBean(AnnotationBean.class.getName())) {
-            BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(AnnotationBean.class);
+        if (!applicationContext.containsBean(AnnotationBeanConfiguration.class.getName())) {
+            BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(AnnotationBeanConfiguration.class);
             beanDefinitionBuilder.addPropertyValue("package", scan);
             beanDefinitionBuilder.addPropertyValue("applicationContext", applicationContext);
-            BeanDefinitionRegistry beanDefinitonRegistry = (BeanDefinitionRegistry) applicationContext.getBeanFactory();
-            beanDefinitonRegistry.registerBeanDefinition(AnnotationBean.class.getName(),
+            BeanDefinitionRegistry beanDefinitionRegistry = (BeanDefinitionRegistry) applicationContext.getBeanFactory();
+            beanDefinitionRegistry.registerBeanDefinition(AnnotationBeanConfiguration.class.getName(),
                                                          beanDefinitionBuilder.getRawBeanDefinition());
         }
-        return BeanUtils.instantiate(AnnotationBean.class);
+        return BeanUtils.instantiate(AnnotationBeanConfiguration.class);
 
     }
 

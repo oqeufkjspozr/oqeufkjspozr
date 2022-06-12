@@ -6,11 +6,18 @@ import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.spring.extension.SpringExtensionFactory;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.protocol.AbstractProxyProtocol;
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixCommandProperties;
+import feign.Feign;
 import feign.RequestInterceptor;
 import feign.Retryer;
+import feign.Target;
 import feign.codec.ErrorDecoder;
 import feign.httpclient.ApacheHttpClient;
 import feign.hystrix.HystrixFeign;
+import feign.hystrix.SetterFactory;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -41,6 +48,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import javax.net.ssl.SSLContext;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
@@ -83,14 +91,16 @@ public class FeignProtocol extends AbstractProxyProtocol {
         int connections = url.getParameter(Constants.CONNECTIONS_KEY, 20);
         int retries = url.getParameter(Constants.RETRIES_KEY, 0);
 
+
         String schema = "http://";
-        if (url.getPort() == 443 || url.getPort() == 8433) {
+        if (url.getProtocol().equalsIgnoreCase("feigns")) {
             schema = "https://";
         }
 
         String api = schema + url.getHost() + ":" + url.getPort();
 
         FeignClient feignClient = type.getAnnotation(FeignClient.class);
+
 
         if (feignClient != null) {
             //如果feign注解携带url，将以url为准
@@ -113,11 +123,15 @@ public class FeignProtocol extends AbstractProxyProtocol {
         return !StringUtils.isBlank(port) ? Integer.parseInt(port) : 8080;
     }
 
+    public static <T> T target(Class<T> type) {
+        return target(getEnvironment().resolvePlaceholders(type.getAnnotation(FeignClient.class).url()), type, 20, 3000, 0);
+    }
+
     public static <T> T target(String url, Class<T> type) {
         return target(url, type, 20, 3000, 0);
     }
 
-    public static <T> T target(String url, Class<T> type, int connections, int timeout, int retries) {
+    public static <T> T target(String url, Class<T> type, final int connections, final int timeout, int retries) {
         SSLContext sslContext = SSLContexts.createSystemDefault();
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
@@ -138,16 +152,61 @@ public class FeignProtocol extends AbstractProxyProtocol {
                 .setRetryHandler(new DefaultHttpRequestRetryHandler(0, true))
                 .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
                 .build();
-        return HystrixFeign.builder()
+
+        FeignClient feignClient = type.getAnnotation(FeignClient.class);
+        Class<?> fallbackFactory = feignClient.fallbackFactory();
+
+        SetterFactory setterFactory;
+        if (void.class != fallbackFactory) {
+            setterFactory = getApplicationContext().getBean(SetterFactory.class);
+        } else {
+            setterFactory = new SetterFactory() {
+                @Override
+                public HystrixCommand.Setter create(Target<?> target, Method method) {
+                    String groupKey = target.name();
+                    String commandKey = Feign.configKey(target.type(), method);
+                    return HystrixCommand.Setter
+                            .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
+                            .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
+                                    .withExecutionTimeoutInMilliseconds(timeout)
+                                    .withExecutionIsolationSemaphoreMaxConcurrentRequests(connections))
+                            .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
+                }
+            };
+        }
+
+
+        HystrixFeign.Builder builder = HystrixFeign.builder()
+                .setterFactory(setterFactory)
                 .requestInterceptors(getApplicationContext().getBeansOfType(RequestInterceptor.class).values())
                 .contract(new SpringMvcContract())
                 .encoder(new SpringEncoder(objectFactory))
                 .decoder(new SpringDecoder(objectFactory))
                 .client(new ApacheHttpClient(httpClient))
                 .errorDecoder(new ErrorDecoder.Default())
-                .retryer(new Retryer.Default(100, 500, retries))
-                .target(type, url);
+                .retryer(new Retryer.Default(100, 500, retries));
+
+        if (feignClient.decode404()) {
+            builder.decode404();
+        }
+
+        Class<?> fallback = feignClient.fallback();
+
+        if (void.class != fallback) {
+            try {
+                Map<String, ?> beansOfType = getApplicationContext().getBeansOfType(fallback);
+                if (beansOfType.size() > 0) {
+                    return builder.target(type, url, (T) getApplicationContext().getBean(fallback));
+                }
+                return builder.target(type, url, (T) fallback.newInstance());
+
+            } catch (Exception e) {
+                throw new RpcException(e);
+            }
+        }
+        return builder.target(type, url);
     }
+
 
     @SuppressWarnings("unchecked")
     private static WebApplicationContext getApplicationContext() {

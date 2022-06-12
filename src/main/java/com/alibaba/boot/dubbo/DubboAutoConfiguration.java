@@ -3,7 +3,6 @@ package com.alibaba.boot.dubbo;
 import com.alibaba.boot.dubbo.endpoint.DubboEndpoint;
 import com.alibaba.boot.dubbo.health.DubboHealthIndicator;
 import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.MonitorConfig;
 import com.alibaba.dubbo.config.ProtocolConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +19,19 @@ public class DubboAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ApplicationConfig requestApplicationConfig() {
+    public ApplicationConfig applicationConfig() {
         return dubboProperties.getApplication();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RegistryConfig requestRegistryConfig() {
+    public RegistryConfig registryConfig() {
         return dubboProperties.getRegistry();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProtocolConfig requestProtocolConfig() {
+    public ProtocolConfig protocolConfig() {
         return dubboProperties.getProtocol();
     }
 
