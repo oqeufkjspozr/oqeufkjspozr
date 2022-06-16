@@ -1,15 +1,16 @@
 package com.alibaba.boot.dubbo;
 
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.ProtocolConfig;
-import com.alibaba.dubbo.config.RegistryConfig;
+import com.alibaba.dubbo.config.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @ConfigurationProperties(prefix = "spring.dubbo")
 public class DubboProperties {
 
-    private String scan;
+    private String            scan = "";
+
+    //全局超时时间
+    private Integer           timeout = 1000;
 
     @NestedConfigurationProperty
     private ApplicationConfig application;
@@ -52,4 +53,11 @@ public class DubboProperties {
         this.scan = scan;
     }
 
+    public Integer getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Integer timeout) {
+        this.timeout = timeout;
+    }
 }

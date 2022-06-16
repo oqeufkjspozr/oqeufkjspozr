@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ConsumerBean {
 
-    private String group;
-    private String version;
-    private String interfaceName;
+    private String       group;
+    private String       version;
+    private String       interfaceName;
     private List methodNames;
     private Integer timeout;
     private Integer connections;

@@ -1,26 +1,33 @@
-*spring-boot-start-dubbo*
+spring-boot-start-dubbo
+---
 
 * Dubbo是阿里开发的一套分布式通讯框架,Spring-boot是业界比较火的微服务框架，两者可以进行结合实现分布式微服务
 * 对于内部远程Rpc调用，可以借用Dubbo能力，达到服务治理的目的
 
-*增加feign protocol支持*
+增加feign protocol支持
+---
 
 > 该协议主要是为了支持老项目可以消费springcloud提供的接口，并可以利用dubbo的服务发现，构建出一个springboot rest集群，
 > dubbo与springboot结合时，不需要dubbo再次导出rest服务。而是由springboot提供rest服务dubbo端只负责注册，构建服务目录。
 
 
-*如何发布Dubbo服务*
+如何发布Dubbo服务
+---
+
 在Spring Boot项目的pom.xml中添加以下依赖:
+---
 
 ```
  <dependency>
         <groupId>com.github.wu191287278</groupId>
         <artifactId>spring-boot-starter-dubbo</artifactId>
-        <version>1.5.2</version>
+        <version>1.5.3</version>
  </dependency>
  ```
 
-*example*
+example
+
+---
 
 ```
 //服务端，多协议发布服务
@@ -124,6 +131,7 @@ public class UserServiceTest {
 
 
 在application.properties添加Dubbo的版本信息和客户端超时信息,如下:
+
 ```
 spring:
   application:
@@ -141,5 +149,81 @@ spring:
 
 
 
-*演示样例*
+*网关支持，支持聚合dubbo rest服务同时兼容springcloud rest代理
+---
+
+maven 依赖
+
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-zuul</artifactId>
+</dependency>
+```
+
+启动类
+```
+@SpringBootApplication
+@EnableDubboProxy
+public class DubboApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DubboApplication.class, args);
+    }
+}
+```
+配置文件
+
+```
+spring:
+  application:
+    name: dubbo-application
+
+  dubbo:
+    application:
+      name: ${spring.application.name}
+    registry:
+      protocol: hazelcast
+      address: 224.5.6.7:1234
+```
+
+
+
+演示样例
+---
+
 *https://git.oschina.net/wuyu15255872976/dubbo-demo-parent.git*
+
+
+新增Hazelcast 注册中心
+---
+
+```
+spring:
+  application:
+    name: dubbo-application
+
+  dubbo:
+    application:
+      name: ${spring.application.name}
+    registry:
+      protocol: hazelcast
+      address: 224.5.6.7:1234?managementCenter=http://localhost:8080/mancenter #managementCenter 是hazelcast监控地址，可以不填写
+```
+
+
+
+
+Hazelcast 监控中心
+---
+
+```
+地址：https://hazelcast.org/download/
+
+```
+
+![](https://github.com/wu191287278/picture/blob/master/start-dubbo/1.png)
+![](https://github.com/wu191287278/picture/blob/master/start-dubbo/2.png)
+![](https://github.com/wu191287278/picture/blob/master/start-dubbo/3.png)
+![](https://github.com/wu191287278/picture/blob/master/start-dubbo/4.png)
+![](https://github.com/wu191287278/picture/blob/master/start-dubbo/5.png)

@@ -4,11 +4,11 @@ import java.util.List;
 
 public class ProviderBean {
 
-    private String target;
-    private String interfaceName;
-    private String version;
-    private String group;
-    private Integer timeout;
+    private String       target;
+    private String       interfaceName;
+    private String       version;
+    private String       group;
+    private Integer      timeout;
     private List methodNames;
 
     private Integer connections;
