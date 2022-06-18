@@ -1,25 +1,31 @@
 package com.alibaba.boot.dubbo;
 
-import com.alibaba.dubbo.config.*;
+import com.alibaba.dubbo.config.ApplicationConfig;
+import com.alibaba.dubbo.config.ProtocolConfig;
+import com.alibaba.dubbo.config.RegistryConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @ConfigurationProperties(prefix = "spring.dubbo")
 public class DubboProperties {
 
-    private String            scan = "";
+    private String scan = "";
 
     //全局超时时间
-    private Integer           timeout = 1000;
+    private Integer timeout = 1000;
+
+    //泛化服务代理路径前缀
+    private String genericPrefix = "/proxy/";
+
 
     @NestedConfigurationProperty
     private ApplicationConfig application;
 
     @NestedConfigurationProperty
-    private RegistryConfig    registry;
+    private RegistryConfig registry;
 
     @NestedConfigurationProperty
-    private ProtocolConfig    protocol = new ProtocolConfig("dubbo",20880);
+    private ProtocolConfig protocol = new ProtocolConfig("dubbo", 20880);
 
     public String getScan() {
         return scan;
@@ -60,4 +66,13 @@ public class DubboProperties {
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;
     }
+
+    public String getGenericPrefix() {
+        return genericPrefix;
+    }
+
+    public void setGenericPrefix(String genericPrefix) {
+        this.genericPrefix = genericPrefix;
+    }
+
 }

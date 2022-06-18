@@ -46,5 +46,4 @@ public class DubboAutoConfiguration {
         return new DubboHealthIndicator();
     }
 
-
 }

@@ -4,6 +4,7 @@ import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.config.*;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.dubbo.config.spring.AnnotationBean;
+import com.alibaba.dubbo.config.spring.ReferenceBean;
 import com.alibaba.dubbo.config.spring.ServiceBean;
 import com.alibaba.dubbo.rpc.Filter;
 import com.alibaba.dubbo.rpc.Protocol;
@@ -19,6 +20,7 @@ import org.springframework.util.ReflectionUtils;
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by wuyu on 2017/4/19.
@@ -64,7 +66,6 @@ public class AnnotationBeanConfiguration extends AnnotationBean implements Appli
             return bean;
         }
 
-        autowiredFilterDependency(bean);
         Class<?> targetClass = AopUtils.getTargetClass(bean);
         Service service = targetClass.getAnnotation(Service.class);
 
@@ -114,13 +115,13 @@ public class AnnotationBeanConfiguration extends AnnotationBean implements Appli
 
                 if (service.protocol().length > 0) {
                     List<ProtocolConfig> protocolConfigs = new ArrayList<>();
-                    ExtensionLoader<Protocol> protocolExtensionLoader = ExtensionLoader.getExtensionLoader(Protocol.class);
-                    Set<String> supportedExtensions = protocolExtensionLoader.getSupportedExtensions();
+                    Map<String, ProtocolConfig> beansOfType = applicationContext.getBeansOfType(ProtocolConfig.class);
+
                     for (String protocol : service.protocol()) {
-                        if (supportedExtensions.contains(protocol)) {
-                            protocolConfigs.add(new ProtocolConfig(protocol));
-                        } else {
-                            protocolConfigs.add(applicationContext.getBean(protocol, ProtocolConfig.class));
+                        for (ProtocolConfig protocolConfig : beansOfType.values()) {
+                            if (protocolConfig.getName().equalsIgnoreCase(protocol)) {
+                                protocolConfigs.add(protocolConfig);
+                            }
                         }
                     }
                     serviceConfig.setProtocols(protocolConfigs);
@@ -164,16 +165,29 @@ public class AnnotationBeanConfiguration extends AnnotationBean implements Appli
         return bean;
     }
 
+
     protected void addServiceConfig(ServiceBean serviceBean) {
+        getServiceConfigs().add(serviceBean);
+    }
+
+    protected Set<ServiceConfig<?>> getServiceConfigs() {
+        Field serviceConfigsField = ReflectionUtils.findField(AnnotationBean.class, "serviceConfigs");
+        serviceConfigsField.setAccessible(true);
         try {
-            Field serviceConfigsField = ReflectionUtils.findField(AnnotationBean.class, "serviceConfigs");
-            serviceConfigsField.setAccessible(true);
-            Set<ServiceConfig<?>> serviceConfigs = (Set<ServiceConfig<?>>) serviceConfigsField.get(this);
-            serviceConfigs.add(serviceBean);
-        } catch (Exception e) {
+            return (Set<ServiceConfig<?>>) serviceConfigsField.get(this);
+        } catch (IllegalAccessException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
 
+    protected ConcurrentMap<String, ReferenceBean<?>> getReferenceConfigs() {
+        Field referenceConfigsField = ReflectionUtils.findField(AnnotationBean.class, "referenceConfigs");
+        referenceConfigsField.setAccessible(true);
+        try {
+            return (ConcurrentMap<String, ReferenceBean<?>>) referenceConfigsField.get(this);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
     private boolean isMatchPackage(Object bean) {
@@ -190,24 +204,9 @@ public class AnnotationBeanConfiguration extends AnnotationBean implements Appli
         return false;
     }
 
-    private Set<String> names = new HashSet<>();
+    private Set<String> filterKeys = new HashSet<>();
 
-
-    protected void autowiredFilterDependency(Object object) {
-        Class<?> targetClass = AopUtils.getTargetClass(object);
-        Service service = targetClass.getAnnotation(Service.class);
-        DubboClient dubboClient = targetClass.getAnnotation(DubboClient.class);
-
-        if (service != null) {
-            names.addAll(Arrays.asList(service.filter()));
-        }
-
-        if (dubboClient != null) {
-            names.addAll(Arrays.asList(dubboClient.value().filter()));
-        }
-
-
-    }
+    private Set<String> protocolKeys = new HashSet<>();
 
 
     protected void autowired(Object object) {
@@ -224,9 +223,42 @@ public class AnnotationBeanConfiguration extends AnnotationBean implements Appli
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        for (String filterKey : names) {
+
+        for (ServiceConfig<?> serviceConfig : getServiceConfigs()) {
+            filterKeys.addAll(Arrays.asList(serviceConfig.getFilter().split(",")));
+            ProtocolConfig protocol = serviceConfig.getProtocol();
+            if (protocol != null && protocol.getName() != null) {
+                protocolKeys.add(protocol.getName());
+            }
+
+            List<ProtocolConfig> protocols = serviceConfig.getProtocols();
+            if (protocols != null) {
+                for (ProtocolConfig protocolConfig : protocols) {
+                    if (protocolConfig.getName() != null) {
+                        protocolKeys.add(protocol.getName());
+                    }
+                }
+            }
+        }
+
+
+        for (ReferenceBean<?> referenceBean : applicationContext.getBeansOfType(ReferenceBean.class).values()) {
+            filterKeys.addAll(Arrays.asList(referenceBean.getFilter().split(",")));
+
+            String protocol = referenceBean.getProtocol();
+            if (protocol != null) {
+                protocolKeys.add(protocol);
+            }
+        }
+
+        for (String filterKey : filterKeys) {
             Filter filter = ExtensionLoader.getExtensionLoader(Filter.class).getExtension(filterKey);
             autowired(filter);
+        }
+
+        for (String protocolKey : protocolKeys) {
+            Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolKey);
+            autowired(protocol);
         }
     }
 }
