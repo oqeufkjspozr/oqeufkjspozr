@@ -21,7 +21,7 @@ spring-boot-start-dubbo
  <dependency>
         <groupId>com.github.wu191287278</groupId>
         <artifactId>spring-boot-starter-dubbo</artifactId>
-        <version>1.5.3</version>
+        <version>1.5.31</version>
  </dependency>
  ```
 
@@ -187,6 +187,38 @@ spring:
       address: 224.5.6.7:1234
 ```
 
+泛化代理Dubbo转换成rest
+
+```
+
+spring:
+  application:
+    name: dubbo-application
+
+  dubbo:
+    application:
+      name: ${spring.application.name}
+    registry:
+      protocol: hazelcast
+      address: 224.5.6.7:1234
+    generic-prefix: /proxy
+
+//rest请求示例 localhost:8100/proxy/
+{
+	"params":[1],
+	"method":"com.example.service.UserService.selectByPrimaryKey",
+	"version":"1.0.0"
+}
+
+//返回结果
+{
+  "jsonrpc": "2.0",
+  "id": null,
+  "result": "{\"id\":1,\"username\":\"wuyu\",\"createdTime\":1493775816000,\"address\":\"安徽省阜阳市\",\"class\":\"com.example.model.User\",\"password\":\"123456\"}"
+}
+
+
+```
 
 
 演示样例
